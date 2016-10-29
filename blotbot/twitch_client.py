@@ -1,7 +1,62 @@
+import socket
+import time
+
 class TwitchClient:
+    def __init__(self, config):
+        self.config = config
+
+    @property
+    def host(self):
+        return self.config.get('host')
+
+    @property
+    def port(self):
+        return self.config.get('port')
+
+    @property
+    def oauth(self):
+        return self.config.get('oauth')
+
+    @property
+    def nick(self):
+        return self.config.get('nick')
+
+    @property
+    def channel(self):
+        return self.config.get('channel')
+
+    @property
+    def msg_rate(self):
+        return self.config.get('msg_rate', 30.0/19.0)
+
+    def connect(self):
+        self.socket = socket.socket()
+        self.socket.connect((self.host, self.port))
+        self.send("PASS oauth:{}\r\n".format(self.oauth).encode("utf-8"))
+        self.send("NICK {}\r\n".format(self.nick).encode("utf-8"))
+        self.send("JOIN {}\r\n".format(self.channel).encode("utf-8"))
+
+    def start(self):
+        self.alive = True
+
+        while self.alive:
+            response = self.socket.recv(1024).decode("utf-8")
+            self.handle_response(response)
+            time.sleep(1.0 / self.msg_rate)
+
+    def handle_response(self, response):
+        print(response) # TODO(coalman): replace or configure echo
+
+        # answer server pings
+        if response == "PING :tmi.twitch.tv\r\n":
+            self.socket.send("PONG :tmi.twitch.tv\r\n".encode("utf-8"))
+            return
+
+    def send(self, msg):
+        self.socket.send(msg)
+
     def send_chat(self, msg):
-        channel = self.config["channel"]
-        self.socket.send("PRIVMSG #{} :{}".format(channel, msg))
+       self.send("PRIVMSG #{}: {}".format(self.channel, msg))
 
     def send_ban(self, user):
         self.send_chat(".ban {}".format(user))
