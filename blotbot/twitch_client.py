@@ -34,7 +34,7 @@ class TwitchClient:
         self.socket.connect((self.host, self.port))
         self.send("PASS oauth:{}\r\n".format(self.oauth).encode("utf-8"))
         self.send("NICK {}\r\n".format(self.nick).encode("utf-8"))
-        self.send("JOIN {}\r\n".format(self.channel).encode("utf-8"))
+        self.send("JOIN #{}\r\n".format(self.channel).encode("utf-8"))
 
     def start(self):
         self.alive = True
