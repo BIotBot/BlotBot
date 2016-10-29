@@ -1,5 +1,8 @@
 import socket
 import time
+import re
+
+pattern_chat = re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
 
 class TwitchClient:
     def __init__(self, config):
@@ -41,16 +44,23 @@ class TwitchClient:
 
         while self.alive:
             response = self.socket.recv(1024).decode("utf-8")
-            self.handle_response(response)
+            responses = response.split('\n')
+            for res in responses:
+                self.handle_response(res)
             time.sleep(1.0 / self.msg_rate)
 
     def handle_response(self, response):
-        print(response) # TODO(coalman): replace or configure echo
+        # print(response) # TODO(coalman): replace or configure echo
 
         # answer server pings
         if response == "PING :tmi.twitch.tv\r\n":
             self.socket.send("PONG :tmi.twitch.tv\r\n".encode("utf-8"))
-            return
+        else:
+            username = re.search(r"\w+", response)
+            if username is not None:
+                username = username.group(0) # return the entire match
+                message = pattern_chat.sub("", response)
+                print(username + ": " + message)
 
     def send(self, msg):
         self.socket.send(msg)
