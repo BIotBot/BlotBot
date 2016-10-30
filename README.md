@@ -12,3 +12,5 @@ Instructions to setup:
 $ pip install -r requirements.txt
 $ python -m blotbot.main
 ```
+
+Configuration options are available in config.yaml
