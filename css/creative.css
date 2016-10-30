@@ -23,7 +23,7 @@ a {
   -webkit-transition: all 0.35s;
   -moz-transition: all 0.35s;
   transition: all 0.35s;
-  color: #F05F40;
+  color: #72445A;
 }
 a:hover,
 a:focus {
@@ -54,6 +54,7 @@ p {
 }
 section {
   padding: 100px 0;
+  background-color: #EBF1F2;
 }
 .final-block {
   color: #EEEEEE;
@@ -430,4 +431,14 @@ body {
 }
 .small-icons {
   margin-top: 200px;
+}
+.source {
+  margin-top: 15px;
+  font-family: 'Helvetica Neue', 'Merriweather', Arial, sans-serif;
+}
+.quotation {
+  font-family: 'Helvetica Neue', 'Merriweather', Arial, sans-serif;
+}
+.claim {
+  color: black;
 }
