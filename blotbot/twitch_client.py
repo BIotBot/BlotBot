@@ -7,9 +7,9 @@ from blotbot.sentiment_training import build, load_corpus
 
 pattern_chat = re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
 
-prefix_notice = "@msg-id"
-pattern_ban = re.compile(r"^@msg-id=ban_success :tmi\.twitch\.tv NOTICE #\w+ :([^ ]+) is now banned from this room")
-pattern_timeout = re.compile(r"^@msg-id=ban_success :tmi\.twitch\.tv NOTICE #\w+ :([^ ]+) has been timed out for \d+ seconds.")
+prefix_notice = ":tmi.twitch.tv NOTICE"
+pattern_ban = re.compile(r"^:tmi\.twitch\.tv NOTICE #\w+ :([^ ]+) is now banned from this room")
+pattern_timeout = re.compile(r"^:tmi\.twitch\.tv NOTICE #\w+ :([^ ]+) has been timed out")
 
 class TwitchClient:
     def __init__(self, config, classifier):
@@ -41,7 +41,7 @@ class TwitchClient:
 
     @property
     def user_msg_history_len(self):
-        return self.config.get('user_msg_history_len', 3)
+        return self.config.get('user_msg_history_len', 1)
 
     @property
     def host(self):
@@ -101,8 +101,8 @@ class TwitchClient:
             if match is None:
                 match = pattern_timeout.search(response)
             if match is not None:
+                username = match.group(1)
                 print("user " + username + " was banned")
-                username = response.group(1)
                 if username not in self.flagged_users:
                     user_msgs = self.get_user_msgs(username)
                     user_msgs = self.preprocessor.transform(user_msgs)
