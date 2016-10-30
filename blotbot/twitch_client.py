@@ -35,6 +35,10 @@ class TwitchClient:
     def msg_rate(self):
         return self.config.get('msg_rate', 30.0/19.0)
 
+    @property
+    def timeout(self):
+        return self.config.get('timeout', 120)
+
     def connect(self):
         self.socket = socket.socket()
         self.socket.connect((self.host, self.port))
@@ -83,6 +87,6 @@ class TwitchClient:
 
     def send_timeout(self, user, secs=-1):
         if secs == -1:
-            secs = self.config["timeout"]
+            secs = self.timeout
 
         self.send_chat(".timeout {}".format(user, secs))
