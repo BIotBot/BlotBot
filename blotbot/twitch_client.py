@@ -1,12 +1,15 @@
 import socket
 import time
 import re
+from blotbot.sentiment_training import NltkPreprocessor
 
 pattern_chat = re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
 
 class TwitchClient:
-    def __init__(self, config):
+    def __init__(self, config, classifier):
         self.config = config
+        self.classifier = classifier
+        self.preprocessor = NltkPreprocessor()
 
     @property
     def host(self):
@@ -59,8 +62,15 @@ class TwitchClient:
             username = re.search(r"\w+", response)
             if username is not None:
                 username = username.group(0) # return the entire match
-                message = pattern_chat.sub("", response)
-                print(username + ": " + message)
+                msg = pattern_chat.sub("", response)
+                msg_cls = self.classify_message(msg)
+                if msg_cls == 1:
+                    print(username + " (" + str(msg_cls) + ") | " + msg)
+
+    def classify_message(self, msg):
+        msg_data = self.preprocessor.transform([msg])
+        msg_cls = self.classifier.predict(msg_data)[0]
+        return msg_cls
 
     def send(self, msg):
         self.socket.send(msg)
