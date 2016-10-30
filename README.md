@@ -3,7 +3,7 @@ BlotBot
 
 Dependencies:
 
-- python 3.5.x
+- python 3.3.x
 - pip
 
 Instructions to setup:
