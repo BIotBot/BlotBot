@@ -21,7 +21,7 @@ class TwitchClient:
         self.vectorizer = create_vectorizer(partial=True)
         self.vectorizer.fit(self.X)
         self.last_rebuild = time.time()
-        self.dirty_corpus = True
+        self.dirty_corpus = False
         self.user_msg_buffer = {}
         self.flagged_users = set()
 
@@ -77,7 +77,7 @@ class TwitchClient:
         self.send("PASS oauth:{}\r\n".format(self.oauth).encode("utf-8"))
         self.send("NICK {}\r\n".format(self.nick).encode("utf-8"))
         self.send("JOIN #{}\r\n".format(self.channel).encode("utf-8"))
-        self.send("CAP REQ :twitch.tv/commands".encode("utf-8"))
+        self.send("CAP REQ :twitch.tv/commands\r\n".encode("utf-8"))
 
     def start(self):
         self.alive = True
@@ -136,16 +136,16 @@ class TwitchClient:
 
     def send(self, msg):
         print(msg)
-        self.socket.send(msg)
+        print(self.socket.send(msg))
 
     def send_chat(self, msg):
-       self.send("PRIVMSG #{} :{}".format(self.channel, msg).encode("utf-8"))
+       self.send("PRIVMSG #{} :{}\r\n".format(self.channel, msg).encode("utf-8"))
 
     def send_ban(self, user):
-        self.send_chat("/ban {}".format(user))
+        self.send_chat(".ban {}".format(user))
 
     def send_timeout(self, user, secs=-1):
         if secs == -1:
             secs = self.timeout
 
-        self.send_chat("/timeout {} {}".format(user, secs))
+        self.send_chat(".timeout {} {}".format(user, secs))
