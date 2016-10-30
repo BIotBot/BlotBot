@@ -11,8 +11,13 @@ body {
 body {
   font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
 }
+.top-hr {
+  border-color: white;
+  border-width: 3px;
+  max-width: 50px;
+}
 hr {
-  border-color: EEEEEE;
+  border-color: #72445A;
   border-width: 3px;
   max-width: 50px;
 }
@@ -27,7 +32,7 @@ a {
 }
 a:hover,
 a:focus {
-  color: #eb3812;
+  color: #ffffff;
 }
 h1,
 h2,
@@ -429,9 +434,6 @@ body {
 .custom-icon {
   width: 100px;
 }
-.small-icons {
-  margin-top: 200px;
-}
 .source {
   margin-top: 15px;
   font-family: 'Helvetica Neue', 'Merriweather', Arial, sans-serif;
@@ -441,4 +443,11 @@ body {
 }
 .claim {
   color: black;
+}
+blockquote {
+  border-left: 5px solid;
+  border-color: #72445A;
+}
+.fa:hover {
+  color: #ffffff;
 }
